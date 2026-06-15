@@ -1,4 +1,4 @@
-# TicketStop — Distributed Flash-Sale Engine
+# saleStore — Distributed Flash-Sale Engine
 
 Repository scaffold for a Kubernetes-native, high-throughput flash-sale platform.
 
