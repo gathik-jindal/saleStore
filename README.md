@@ -24,10 +24,10 @@ The older generic scaffold folders are being retired in favor of per-service Spr
 
 - User registration and login
 - BCrypt password hashing
-- RSA-signed JWT access tokens
+- RS256-signed JWT access tokens with ES256-ready architecture
 - Refresh token sessions with rotation and logout revocation
 - `/.well-known/jwks.json`
-- Internal gRPC public key and token validation API
+- JWKS/gRPC public-key publishing for local edge-side JWT verification
 - Flyway schema migration
 - H2 local profile by default, PostgreSQL via environment variables
 
@@ -57,7 +57,7 @@ mvn -pl services/user-identity test
 ## Folder Layout
 
 - `services/` - per-service Spring Boot modules
-  - `services/user-identity/` - registration, login, JWT signing, refresh sessions, JWKS, gRPC key API
+  - `services/user-identity/` - WebFlux registration, login, JWT signing, refresh sessions, JWKS, gRPC key API
   - `services/ingestion-edge/` - future fast HTTP entrypoint
   - `services/inventory-cache/` - future Redis + Lua wrapper
   - `services/order-processing/` - future Kafka consumer + DB writes

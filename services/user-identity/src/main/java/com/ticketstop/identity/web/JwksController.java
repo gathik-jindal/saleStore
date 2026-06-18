@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ticketstop.identity.security.JwtService;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 public class JwksController {
     private final JwtService jwtService;
@@ -15,7 +17,7 @@ public class JwksController {
     }
 
     @GetMapping(value = "/.well-known/jwks.json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String jwks() {
-        return jwtService.jwksJson();
+    public Mono<String> jwks() {
+        return Mono.just(jwtService.jwksJson());
     }
 }

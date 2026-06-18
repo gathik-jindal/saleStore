@@ -1,28 +1,25 @@
 package com.ticketstop.identity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
 @TestPropertySource(properties = "identity.grpc.port=0")
 class AuthControllerTest {
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -37,21 +34,25 @@ class AuthControllerTest {
             }
             """;
 
-        String registerResponse = mockMvc.perform(post("/api/v1/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(registerJson))
-            .andExpect(status().isCreated())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+        String registerResponse = webTestClient.post()
+            .uri("/api/v1/auth/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(registerJson)
+            .exchange()
+            .expectStatus().isCreated()
+            .expectBody(String.class)
+            .returnResult()
+            .getResponseBody();
 
         JsonNode registered = objectMapper.readTree(registerResponse);
         assertThat(registered.get("accessToken").asText()).isNotBlank();
         assertThat(registered.get("refreshToken").asText()).isNotBlank();
 
-        mockMvc.perform(get("/api/v1/auth/me")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + registered.get("accessToken").asText()))
-            .andExpect(status().isOk());
+        webTestClient.get()
+            .uri("/api/v1/auth/me")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + registered.get("accessToken").asText())
+            .exchange()
+            .expectStatus().isOk();
 
         String loginJson = """
             {
@@ -59,18 +60,22 @@ class AuthControllerTest {
               "password": "correct-horse-battery-staple"
             }
             """;
-        mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loginJson))
-            .andExpect(status().isOk());
+        webTestClient.post()
+            .uri("/api/v1/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(loginJson)
+            .exchange()
+            .expectStatus().isOk();
 
         String refreshJson = """
             { "refreshToken": "%s" }
             """.formatted(registered.get("refreshToken").asText());
-        mockMvc.perform(post("/api/v1/auth/refresh")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(refreshJson))
-            .andExpect(status().isOk());
+        webTestClient.post()
+            .uri("/api/v1/auth/refresh")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(refreshJson)
+            .exchange()
+            .expectStatus().isOk();
     }
 
     @Test
@@ -83,9 +88,17 @@ class AuthControllerTest {
             }
             """;
 
-        mockMvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andExpect(status().isCreated());
-        mockMvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andExpect(status().isConflict());
+        webTestClient.post()
+            .uri("/api/v1/auth/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(json)
+            .exchange()
+            .expectStatus().isCreated();
+        webTestClient.post()
+            .uri("/api/v1/auth/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(json)
+            .exchange()
+            .expectStatus().isEqualTo(409);
     }
 }

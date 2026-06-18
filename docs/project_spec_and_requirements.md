@@ -14,10 +14,10 @@ The backend is entirely decoupled into isolated microservices running in a Kuber
 
 | Service Name                 | HTTP Port | gRPC Port | Core Responsibilities & Domain Logic                                                                                                                       |
 | :--------------------------- | :-------- | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **User & Identity Service**  | 8081      | 9091      | User registration, authentication, and JWT signing. Serves public keys via gRPC for sub-1ms stateless token verification at the edge.                      |
+| **User & Identity Service**  | 8081      | 9091      | User registration, authentication, and JWT signing. Publishes RS256/ES256 public keys for local cached verification at the edge.                          |
 | **Product Catalog Service**  | 8082      | 9092      | Manages items, descriptions, and initial stock states. Broadcasts updates via Kafka.                                                                       |
 | **Promo & Coupon Service**   | 8083      | 9093      | Validates promotional codes, pricing tiers, and eligibility rules during the checkout process.                                                             |
-| **Ingestion Edge Service**   | 8084      | 9094      | The ultra-fast entry point for POST /checkout. Runs rate limits, requests token validations, and initiates the Redis allocation. **Completely stateless.** |
+| **Ingestion Edge Service**   | 8084      | 9094      | The ultra-fast entry point for POST /checkout. Runs rate limits, verifies JWTs locally with cached public keys, and initiates Redis allocation. **Completely stateless.** |
 | **Inventory Cache Service**  | 8085      | 9095      | Wraps the Redis cluster. Executes atomic Lua scripts for deductions and idempotency.                                                                       |
 | **Order Processing Service** | 8086      | 9096      | Consumes Kafka events. Transforms memory reservations into durable SQL ledger entries.                                                                     |
 | **Payment Gateway Service**  | 8087      | 9097      | Manages 3rd-party gateway integrations, webhooks, and payment state machines.                                                                              |
@@ -30,9 +30,13 @@ To ensure this cluster handles 20,000+ requests per second, the communication pa
 ### **3.1 The 100ms Ingestion Loop (Synchronous Path)**
 
 1. **Request Ingestion:** Client hits the Ingestion Edge Service (8084) to claim an item.
-2. **Auth Verification:** Ingestion Edge validates the user signature via an internal gRPC call to the User Service (9091).
+2. **Auth Verification:** Ingestion Edge validates the JWT signature locally using cached public keys published by the User Service. It refreshes keys by TTL or unknown `kid`, not on every request.
 3. **Atomic Allocation:** Ingestion Edge sends a gRPC reservation command to the Inventory Cache Service (9095). The Lua script executes. If stock is available, it returns Success immediately.
 4. **Event Dispatch:** Ingestion Edge drops a message into the Kafka order_intents topic and returns HTTP 202 Accepted. The user's checkout is legally reserved in under 50ms.
+
+### **3.3 Identity Key Distribution**
+
+The hot path must not perform a User Service gRPC call per checkout request. The User & Identity Service signs access tokens with asymmetric JWT algorithms. RS256 is the default implementation; ES256 is an approved profile for future smaller-token deployments. Public keys are exposed by key id (`kid`) through `/.well-known/jwks.json` and the internal key API. Ingestion Edge instances cache the key set locally, verify issuer/audience/expiry/signature in-process, and refresh keys in the background or when a token references an unknown `kid`.
 
 ### **3.2 The Background Convergence (Asynchronous Path)**
 

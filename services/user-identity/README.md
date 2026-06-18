@@ -1,6 +1,6 @@
 # User & Identity Service
 
-Spring Boot service for user registration, authentication, JWT signing, and public-key distribution.
+Spring Boot WebFlux service for user registration, authentication, JWT signing, and public-key distribution.
 
 ## Runtime
 
@@ -22,8 +22,12 @@ Spring Boot service for user registration, authentication, JWT signing, and publ
 
 The protobuf contract lives at `src/main/proto/identity_key_service.proto`.
 
-- `GetPublicKey` returns the active RSA public key and JWKS payload.
-- `ValidateToken` validates an access token for internal callers such as ingestion-edge.
+- `GetPublicKey` returns the active public key and JWKS payload for edge-side caches.
+- `ValidateToken` remains available for diagnostics and internal fallback paths, but checkout traffic should verify JWTs locally with cached public keys instead of calling this per request.
+
+## JWT Verification Model
+
+The service signs access tokens with RS256 today. The architecture allows ES256 as a future signing profile. Downstream services should cache JWKS keys by `kid`, refresh them periodically, and locally verify signature, issuer, audience, and expiry on the hot path.
 
 ## Local Run
 
