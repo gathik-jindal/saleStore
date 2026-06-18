@@ -1,0 +1,13 @@
+CREATE TABLE products (
+    id UUID PRIMARY KEY,
+    sku VARCHAR(80) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
+    description VARCHAR(2000),
+    price NUMERIC(12, 2) NOT NULL,
+    initial_stock INT NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_products_active ON products(active);

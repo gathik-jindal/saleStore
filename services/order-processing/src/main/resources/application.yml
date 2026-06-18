@@ -1,0 +1,23 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: order-processing
+  datasource:
+    url: ${ORDER_DATASOURCE_URL:jdbc:h2:mem:orders;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1}
+    username: ${ORDER_DATASOURCE_USERNAME:sa}
+    password: ${ORDER_DATASOURCE_PASSWORD:}
+    driver-class-name: ${ORDER_DATASOURCE_DRIVER:org.h2.Driver}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

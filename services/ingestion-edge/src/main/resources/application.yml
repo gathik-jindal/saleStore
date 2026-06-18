@@ -1,0 +1,18 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: ingestion-edge
+
+ingestion:
+  identity-base-url: ${IDENTITY_BASE_URL:http://localhost:8081}
+  inventory-base-url: ${INVENTORY_BASE_URL:http://localhost:8085}
+  promo-base-url: ${PROMO_BASE_URL:http://localhost:8083}
+  order-base-url: ${ORDER_BASE_URL:http://localhost:8086}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

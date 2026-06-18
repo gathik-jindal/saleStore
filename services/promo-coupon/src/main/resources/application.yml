@@ -1,0 +1,23 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: promo-coupon
+  datasource:
+    url: ${PROMO_DATASOURCE_URL:jdbc:h2:mem:promo;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1}
+    username: ${PROMO_DATASOURCE_USERNAME:sa}
+    password: ${PROMO_DATASOURCE_PASSWORD:}
+    driver-class-name: ${PROMO_DATASOURCE_DRIVER:org.h2.Driver}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

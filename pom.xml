@@ -20,6 +20,13 @@
 
     <modules>
         <module>services/user-identity</module>
+        <module>services/product-catalog</module>
+        <module>services/promo-coupon</module>
+        <module>services/inventory-cache</module>
+        <module>services/ingestion-edge</module>
+        <module>services/order-processing</module>
+        <module>services/payment-gateway</module>
+        <module>services/notification</module>
     </modules>
 
     <properties>
