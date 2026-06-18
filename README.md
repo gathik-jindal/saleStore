@@ -1,52 +1,71 @@
-# TicketStop — Distributed Flash-Sale Engine
+# TicketStop - Distributed Flash-Sale Engine
 
-Repository scaffold for a Kubernetes-native, high-throughput flash-sale platform.
+Spring Boot microservices for a Kubernetes-native, high-throughput flash-sale platform.
 
-## Project summary
+## Project Summary
 
-TicketStop implements a decoupled, event-driven architecture tailored for flash-sale workloads. It provides an ultra-low latency ingestion path that atomically reserves inventory via Redis, and an asynchronous background pipeline that converts reservations to durable orders in PostgreSQL. The design targets sub-second reservation latency, zero oversell, and horizontal scalability.
+TicketStop implements a decoupled, event-driven architecture tailored for flash-sale workloads. It provides a low-latency ingestion path that atomically reserves inventory through Redis, and an asynchronous background pipeline that converts reservations to durable orders in PostgreSQL.
 
-## Key features
+## Spring Boot Layout
 
-- Stateless Ingestion Edge that validates auth and reserves stock atomically
-- Redis-backed Inventory Cache with Lua script atomics and idempotency
-- Kafka topics for `order_intents` and `order.created` events
-- Order Processing micro-batches that persist to PostgreSQL
-- Payment and Notification services for completion workflows
-- Kubernetes + KEDA autoscaling strategies and circuit-breaker driven resilience
+This repository is now organized as a Maven multi-module project:
 
-## Quick start (developer)
+- `pom.xml` - parent build and shared dependency versions
+- `services/user-identity` - implemented Spring Boot identity service
+- `services/*` - future Spring Boot service modules
+- `infra/`, `docker/`, `configs/` - deployment and runtime configuration
+- `docs/` - architecture, requirements, and load-testing notes
+
+The older generic scaffold folders are being retired in favor of per-service Spring Boot modules.
+
+## Implemented Service
+
+`services/user-identity` is complete enough for local development:
+
+- User registration and login
+- BCrypt password hashing
+- RSA-signed JWT access tokens
+- Refresh token sessions with rotation and logout revocation
+- `/.well-known/jwks.json`
+- Internal gRPC public key and token validation API
+- Flyway schema migration
+- H2 local profile by default, PostgreSQL via environment variables
+
+## Quick Start
 
 Prerequisites:
 
-- Docker / Docker Desktop
-- kubectl and a Kubernetes cluster (minikube, kind, or cloud)
-- Kafka, Redis, and PostgreSQL (local docker-compose or testcontainers recommended)
+- Java 21
+- Maven 3.9+
+- Docker / Docker Desktop for infrastructure dependencies
+- kubectl and a Kubernetes cluster when running the full mesh
 
-Local quick-start (example using docker-compose):
+Run the implemented identity service:
 
 ```powershell
-# from repo root
-scripts\local_start.sh
-# seed a flash-sale catalog
-scripts\seed_flashsale.sh --product-id=1 --stock=100
-# run load test (k6) in another terminal
-scripts\run_k6.sh --script=scripts/k6/checkout.js
+mvn -pl services/user-identity spring-boot:run
 ```
 
-## Folder layout
+HTTP starts on `8081`; the internal gRPC key service starts on `9091`.
 
-- `services/` — per-service folders (each with a README explaining responsibilities)
-  - `services/ingestion-edge/` — fast HTTP entrypoint
-  - `services/inventory-cache/` — Redis + Lua scripts
-  - `services/order-processing/` — Kafka consumer + DB writes
+Run tests:
+
+```powershell
+mvn -pl services/user-identity test
+```
+
+## Folder Layout
+
+- `services/` - per-service Spring Boot modules
+  - `services/user-identity/` - registration, login, JWT signing, refresh sessions, JWKS, gRPC key API
+  - `services/ingestion-edge/` - future fast HTTP entrypoint
+  - `services/inventory-cache/` - future Redis + Lua wrapper
+  - `services/order-processing/` - future Kafka consumer + DB writes
   - `services/payment-gateway/`, `services/notification/`, etc.
-- `cmd/` — service entrypoint examples
-- `configs/` — environment configurations and k8s overlays
-- `infra/k8s/` — Kubernetes manifests and Helm charts
-- `scripts/` — useful dev/CI helper scripts
-- `docs/` — architecture, load-testing, and runbooks
-- `sql/` — schema and migration templates
-- `docker/` — Dockerfile templates
-- `pkg/common/` — cross-service shared code and DTOs
-- `tests/` — integration and load test harnesses
+- `configs/` - environment configurations and Kubernetes overlays
+- `infra/k8s/` - Kubernetes manifests and Helm charts
+- `scripts/` - useful dev and CI helper scripts
+- `docs/` - architecture, load-testing, and runbooks
+- `sql/` - reference SQL; service migrations live inside each service
+- `docker/` - Dockerfile templates
+- `tests/` - integration and load test harnesses

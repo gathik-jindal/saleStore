@@ -1,0 +1,32 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-identity
+  datasource:
+    url: ${IDENTITY_DATASOURCE_URL:jdbc:h2:mem:identity;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1}
+    username: ${IDENTITY_DATASOURCE_USERNAME:sa}
+    password: ${IDENTITY_DATASOURCE_PASSWORD:}
+    driver-class-name: ${IDENTITY_DATASOURCE_DRIVER:org.h2.Driver}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+identity:
+  grpc:
+    port: ${IDENTITY_GRPC_PORT:9091}
+  jwt:
+    issuer: ${IDENTITY_JWT_ISSUER:ticketstop-user-identity}
+    audience: ${IDENTITY_JWT_AUDIENCE:ticketstop}
+    access-token-ttl: ${IDENTITY_ACCESS_TOKEN_TTL:PT15M}
+    refresh-token-ttl: ${IDENTITY_REFRESH_TOKEN_TTL:P30D}
