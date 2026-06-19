@@ -1,4 +1,4 @@
--- Reference SQL for TicketStop.
+-- Reference SQL for saleStop.
 -- Service-owned migrations are the source of truth and live under:
 -- services/<service-name>/src/main/resources/db/migration
 

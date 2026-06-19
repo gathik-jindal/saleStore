@@ -26,7 +26,7 @@ identity:
   grpc:
     port: ${IDENTITY_GRPC_PORT:9091}
   jwt:
-    issuer: ${IDENTITY_JWT_ISSUER:ticketstop-user-identity}
-    audience: ${IDENTITY_JWT_AUDIENCE:ticketstop}
+    issuer: ${IDENTITY_JWT_ISSUER:salestop-user-identity}
+    audience: ${IDENTITY_JWT_AUDIENCE:salestop}
     access-token-ttl: ${IDENTITY_ACCESS_TOKEN_TTL:PT15M}
     refresh-token-ttl: ${IDENTITY_REFRESH_TOKEN_TTL:P30D}

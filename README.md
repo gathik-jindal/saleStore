@@ -1,10 +1,10 @@
-# saleStore — Distributed Flash-Sale Engine
+# saleStop — Distributed Flash-Sale Engine
 
 Spring Boot microservices for a Kubernetes-native, high-throughput flash-sale platform.
 
 ## Project Summary
 
-TicketStop implements a decoupled, event-driven architecture tailored for flash-sale workloads. It provides a low-latency ingestion path that atomically reserves inventory through Redis, and an asynchronous background pipeline that converts reservations to durable orders in PostgreSQL.
+saleStop implements a decoupled, event-driven architecture tailored for flash-sale workloads. It provides a low-latency ingestion path that atomically reserves inventory through Redis, and an asynchronous background pipeline that converts reservations to durable orders in PostgreSQL.
 
 ## Spring Boot Layout
 

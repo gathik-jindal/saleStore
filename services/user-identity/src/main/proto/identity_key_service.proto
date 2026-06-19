@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package ticketstop.identity.v1;
+package salestop.identity.v1;
 
 option java_multiple_files = true;
-option java_package = "com.ticketstop.identity.grpc";
+option java_package = "com.salestop.identity.grpc";
 option java_outer_classname = "IdentityKeyServiceProto";
 
 service IdentityKeyService {
