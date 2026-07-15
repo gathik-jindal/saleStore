@@ -32,7 +32,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <grpc.version>1.68.1</grpc.version>
+        <grpc.version>1.82.2</grpc.version>
         <protobuf.version>3.25.5</protobuf.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
