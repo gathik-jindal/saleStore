@@ -8,7 +8,7 @@ COPY services ./services
 RUN --mount=type=cache,target=/root/.m2 mvn -q -pl services/${SERVICE} -am package -DskipTests \
  && cp services/${SERVICE}/target/*.jar /app.jar
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 RUN addgroup -S -g 10001 salestop && adduser -S -D -H -u 10001 -G salestop salestop
 WORKDIR /app
 COPY --from=build /app.jar app.jar
