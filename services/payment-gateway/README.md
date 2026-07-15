@@ -1,13 +1,3 @@
-# Payment Gateway Service
+# Payment Gateway
 
-Responsibilities:
-
-- Integrate with third-party payment providers
-- Manage payment state machines and webhooks
-- Provide idempotent compensation and retry flows
-
-Will include:
-
-- Payment provider adapter interfaces
-- Sandbox/testing harness and mock providers
-- Security guidance for PCI-sensitive operations
+Payment state service on port 8087. The included deterministic demo adapter makes local end-to-end execution possible; a signed webhook endpoint supports `SUCCEEDED`, `FAILED`, and `REFUNDED` transitions.

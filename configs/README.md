@@ -1,9 +1,5 @@
 # Configuration
 
-This directory holds configuration templates and examples for different environments:
+Services use environment variables with safe H2/local defaults in their `application.yml` files. The complete key mapping is visible in [`../compose.yml`](../compose.yml); copy [`../.env.example`](../.env.example) to `.env` for local overrides. Kubernetes values and secret placeholders live in [`../infra/helm/salestop`](../infra/helm/salestop).
 
-- `configs/dev.yaml` — development configuration
-- `configs/prod.yaml` — production configuration (secrets excluded)
-- `configs/k8s/*.yaml` — Kubernetes overlays
-
-Environment variable conventions and examples should be documented here.
+Never commit real credentials or environment-specific `application-*.yml` files.

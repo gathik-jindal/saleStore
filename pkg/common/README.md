@@ -1,9 +1,3 @@
-# `pkg/common`
+# Shared contracts
 
-Shared utilities and types used across services, for example:
-
-- Logging and structured logger wrappers
-- Shared DTOs and protocol buffers
-- Common error types and helpers
-
-Keep language-agnostic SDKs under this folder (or as separate packages per language).
+This Maven module owns versioned Kafka event records and the inventory protobuf contract consumed by the edge and inventory services. Generated protobuf sources are build artifacts and are not committed.

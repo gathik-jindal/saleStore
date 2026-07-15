@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: salestop-config
+data:
+  KAFKA_BOOTSTRAP_SERVERS: {{ .Values.config.kafkaBootstrapServers | quote }}
+  REDIS_HOST: {{ .Values.config.redisHost | quote }}
+  JWT_ISSUER: {{ .Values.config.jwtIssuer | quote }}
+  MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: salestop-secrets
+type: Opaque
+stringData:
+  IDENTITY_DATASOURCE_USERNAME: {{ .Values.secrets.postgresUsername | quote }}
+  IDENTITY_DATASOURCE_PASSWORD: {{ .Values.secrets.postgresPassword | quote }}
+  CATALOG_DATASOURCE_USERNAME: {{ .Values.secrets.postgresUsername | quote }}
+  CATALOG_DATASOURCE_PASSWORD: {{ .Values.secrets.postgresPassword | quote }}
+  PROMO_DATASOURCE_USERNAME: {{ .Values.secrets.postgresUsername | quote }}
+  PROMO_DATASOURCE_PASSWORD: {{ .Values.secrets.postgresPassword | quote }}
+  ORDER_DATASOURCE_USERNAME: {{ .Values.secrets.postgresUsername | quote }}
+  ORDER_DATASOURCE_PASSWORD: {{ .Values.secrets.postgresPassword | quote }}
+  PAYMENT_DATASOURCE_USERNAME: {{ .Values.secrets.postgresUsername | quote }}
+  PAYMENT_DATASOURCE_PASSWORD: {{ .Values.secrets.postgresPassword | quote }}
+  SALESTOP_ADMIN_KEY: {{ .Values.secrets.adminKey | quote }}
+  SALESTOP_INTERNAL_KEY: {{ .Values.secrets.internalKey | quote }}
+  PAYMENT_WEBHOOK_SECRET: {{ .Values.secrets.webhookSecret | quote }}

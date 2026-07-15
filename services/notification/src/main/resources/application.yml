@@ -1,0 +1,11 @@
+server.port: 8088
+spring:
+  application.name: notification
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties.spring.json.trusted.packages: com.salestop.common.events
+management.endpoints.web.exposure.include: health,info,prometheus

@@ -1,0 +1,14 @@
+name: Bug report
+description: Report reproducible incorrect behavior
+body:
+  - type: textarea
+    id: description
+    attributes: {label: "What happened?", description: Include the affected service and expected behavior.}
+    validations: {required: true}
+  - type: textarea
+    id: reproduce
+    attributes: {label: Reproduction steps}
+    validations: {required: true}
+  - type: input
+    id: version
+    attributes: {label: Commit or version}

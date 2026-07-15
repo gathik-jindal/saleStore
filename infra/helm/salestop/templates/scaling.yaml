@@ -1,0 +1,38 @@
+{{- range $name, $service := .Values.services }}
+{{- if and $service.autoscaling $service.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {name: {{ $name }}}
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: {{ $name }}}
+  minReplicas: {{ $service.autoscaling.minReplicas }}
+  maxReplicas: {{ $service.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: {type: Utilization, averageUtilization: {{ $service.autoscaling.cpu }}}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies: [{type: Percent, value: 200, periodSeconds: 10}]
+---
+{{- end }}
+{{- if and $service.keda $service.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: {name: {{ $name }}-kafka}
+spec:
+  scaleTargetRef: {name: {{ $name }}}
+  minReplicaCount: {{ $service.keda.minReplicas }}
+  maxReplicaCount: {{ $service.keda.maxReplicas }}
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: {{ $.Values.config.kafkaBootstrapServers | quote }}
+        consumerGroup: order-processing
+        topic: order.intents.v1
+        lagThreshold: {{ $service.keda.lagThreshold | quote }}
+---
+{{- end }}
+{{- end }}

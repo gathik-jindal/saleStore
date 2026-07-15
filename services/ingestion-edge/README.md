@@ -1,12 +1,3 @@
-# Ingestion Edge Service
+# Ingestion Edge
 
-This service is the ultra-low-latency entry point for checkout requests.
-
-Contents:
-
-- High-level responsibility: validate auth, rate-limit, call Inventory Cache Service via gRPC, publish intent to Kafka.
-- API surface: `POST /checkout` and health endpoints.
-- Runtime: stateless; recommended container image and resource hints.
-- Configuration: environment variables for gRPC endpoints, Redis, Kafka, rate limits.
-
-(Implementation notes and examples go here.)
+Reactive checkout entry point on port 8084. It applies a Redis token bucket, verifies cached RS256 JWKS keys locally, loads product/promo data, reserves inventory over gRPC, and durably publishes an order intent. See the root [API reference](../../docs/API.md).

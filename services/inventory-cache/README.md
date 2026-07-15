@@ -1,12 +1,3 @@
-# Inventory Cache Service
+# Inventory Cache
 
-Responsibilities:
-
-- Provide atomic stock allocation via Redis and Lua scripts
-- Provide idempotency checks and keys management
-
-Will include:
-
-- Lua scripts directory
-- gRPC reservation API stubs
-- Health checks and metrics export
+Atomic Redis inventory service on HTTP 8085 and gRPC 9095. One Lua script combines stock deduction, idempotency response caching, and per-user purchase protection; a second script performs compare-and-release compensation.

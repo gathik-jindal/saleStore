@@ -8,6 +8,7 @@ Spring Boot WebFlux service for user registration, authentication, JWT signing, 
 - gRPC: `9091`
 - Default local database: in-memory H2 using PostgreSQL compatibility mode
 - Production database: set `IDENTITY_DATASOURCE_URL`, `IDENTITY_DATASOURCE_USERNAME`, and `IDENTITY_DATASOURCE_PASSWORD`
+- Production signing key: mount PKCS#8 private and X.509 public PEM files and set `IDENTITY_JWT_PRIVATE_KEY_PATH`, `IDENTITY_JWT_PUBLIC_KEY_PATH`, and optionally `IDENTITY_JWT_KEY_ID`
 
 ## HTTP API
 

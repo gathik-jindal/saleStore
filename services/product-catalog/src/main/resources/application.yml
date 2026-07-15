@@ -1,0 +1,20 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: product-catalog
+  datasource:
+    url: ${CATALOG_DATASOURCE_URL:jdbc:h2:mem:catalog;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1}
+    username: ${CATALOG_DATASOURCE_USERNAME:sa}
+    password: ${CATALOG_DATASOURCE_PASSWORD:}
+    driver-class-name: ${CATALOG_DATASOURCE_DRIVER:org.h2.Driver}
+  jpa:
+    hibernate.ddl-auto: validate
+    open-in-view: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+management.endpoints.web.exposure.include: health,info,prometheus
+salestop.admin-key: ${SALESTOP_ADMIN_KEY:local-admin-key}

@@ -1,9 +1,5 @@
-# Tests
+# System tests
 
-Test plans and test harnesses:
-
-- Unit tests per service
-- Integration tests that spin up Kafka/Redis/Postgres (TestContainers or docker-compose)
-- Load test artifacts and post-load verification scripts
-
-Describe CI integration (GitHub Actions) and test matrix here.
+- [`load/checkout.js`](load/checkout.js) is the parameterized k6 arrival-rate scenario.
+- [`integration/verify-inventory.sql`](integration/verify-inventory.sql) verifies post-run stock/order consistency.
+- Service-level Java tests live beside each service under `src/test` and run through `mvn verify`.

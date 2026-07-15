@@ -1,12 +1,3 @@
-# Product Catalog Service
+# Product Catalog
 
-Responsibilities:
-
-- Manage product metadata and initial stock values
-- Broadcast inventory/price updates to Kafka
-- Admin endpoints for seeding flash-sale catalog
-
-Planned files:
-
-- API handlers, DB models, admin CLI
-- Cache warming scripts and integration tests
+Product query/admin API on port 8082. Creating or explicitly seeding a product publishes `inventory.seeded.v1` so inventory can load the exact sale allocation.

@@ -1,9 +1,3 @@
-# Kubernetes Manifests and Helm
+# Kubernetes
 
-This folder will contain Kubernetes manifests and Helm charts for:
-
-- Deployments and Services for each microservice
-- HPA and KEDA configurations
-- Secrets management guidance (external secret manager or sealed-secrets)
-
-Include `README` with deploy instructions and recommended resource requests/limits.
+The deployable Kubernetes package is the Helm chart at [`../helm/salestop`](../helm/salestop). It renders all eight Deployments and Services plus HPA, KEDA, configuration, secrets, and optional ingress. See [`../../docs/LOCAL_DEVELOPMENT.md`](../../docs/LOCAL_DEVELOPMENT.md) for lint/render commands.

@@ -30,3 +30,6 @@ identity:
     audience: ${IDENTITY_JWT_AUDIENCE:salestop}
     access-token-ttl: ${IDENTITY_ACCESS_TOKEN_TTL:PT15M}
     refresh-token-ttl: ${IDENTITY_REFRESH_TOKEN_TTL:P30D}
+    private-key-path: ${IDENTITY_JWT_PRIVATE_KEY_PATH:}
+    public-key-path: ${IDENTITY_JWT_PUBLIC_KEY_PATH:}
+    key-id: ${IDENTITY_JWT_KEY_ID:}

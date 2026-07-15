@@ -1,11 +1,3 @@
-# Promo & Coupon Service
+# Promo Coupon
 
-Responsibilities:
-
-- Validate promo codes and pricing rules
-- Expose fast eligibility checks for the ingestion path
-
-Contains:
-
-- Rules engine or DSL stubs
-- Integration points with Product Catalog and Order Processing
+Coupon validation and admin API on port 8083. Rules cover activation windows, minimum totals, and percentage discounts; the schema also carries a configurable global usage ceiling for provider-backed redemption adapters.

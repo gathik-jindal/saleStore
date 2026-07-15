@@ -1,0 +1,11 @@
+.git
+.github
+.idea
+.vscode
+**/target
+*.log
+.env
+docs
+tests
+infra
+monitoring

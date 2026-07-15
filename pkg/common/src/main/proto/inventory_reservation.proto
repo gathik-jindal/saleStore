@@ -1,0 +1,32 @@
+syntax = "proto3";
+package salestop.inventory.v1;
+option java_package = "com.salestop.common.grpc";
+option java_multiple_files = true;
+
+service InventoryReservationService {
+  rpc Reserve(ReserveInventoryRequest) returns (ReserveInventoryResponse);
+  rpc Release(ReleaseInventoryRequest) returns (ReleaseInventoryResponse);
+}
+
+message ReserveInventoryRequest {
+  int64 product_id = 1;
+  string user_id = 2;
+  int32 quantity = 3;
+  string idempotency_key = 4;
+  string proposed_order_id = 5;
+  string internal_key = 6;
+}
+message ReserveInventoryResponse {
+  string status = 1;
+  string order_id = 2;
+  int32 remaining_stock = 3;
+}
+message ReleaseInventoryRequest {
+  int64 product_id = 1;
+  string user_id = 2;
+  int32 quantity = 3;
+  string idempotency_key = 4;
+  string order_id = 5;
+  string internal_key = 6;
+}
+message ReleaseInventoryResponse { bool released = 1; }

@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 10s
+scrape_configs:
+  - job_name: salestop
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - user-identity:8081
+          - product-catalog:8082
+          - promo-coupon:8083
+          - ingestion-edge:8084
+          - inventory-cache:8085
+          - order-processing:8086
+          - payment-gateway:8087
+          - notification:8088

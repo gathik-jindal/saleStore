@@ -1,0 +1,21 @@
+server.port: 8085
+spring:
+  application.name: inventory-cache
+  data.redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    timeout: 500ms
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties.spring.json.trusted.packages: com.salestop.common.events
+management.endpoints.web.exposure.include: health,info,prometheus
+salestop.internal-key: ${SALESTOP_INTERNAL_KEY:local-internal-key}
+inventory:
+  grpc-port: ${INVENTORY_GRPC_PORT:9095}
+  idempotency-ttl: ${IDEMPOTENCY_TTL:PT5M}
+  buyer-ttl: ${BUYER_GUARD_TTL:PT24H}

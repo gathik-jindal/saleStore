@@ -1,12 +1,3 @@
-# Notification Service
+# Notification
 
-Responsibilities:
-
-- Consume final order events and notify users via WebSocket/SMS/Email
-- Provide a WebSocket gateway for browser clients
-
-Will include:
-
-- Notification delivery adapters
-- Retry/backoff policy and audit logs
-- End-to-end test hooks for demonstrating user delivery
+Kafka consumer and live SSE API on port 8088. It retains each user's latest 50 payment notifications in memory and emits 15-second stream heartbeats.

@@ -2,6 +2,8 @@ package com.salestop.identity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -11,22 +13,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @SpringBootTest
 @AutoConfigureWebTestClient
 @TestPropertySource(properties = "identity.grpc.port=0")
 class AuthControllerTest {
-    @Autowired
-    private WebTestClient webTestClient;
+  @Autowired private WebTestClient webTestClient;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    @Test
-    void registerLoginMeAndRefreshWork() throws Exception {
-        String registerJson = """
+  @Test
+  void registerLoginMeAndRefreshWork() throws Exception {
+    String registerJson =
+        """
             {
               "email": "ada@example.com",
               "password": "correct-horse-battery-staple",
@@ -34,53 +32,66 @@ class AuthControllerTest {
             }
             """;
 
-        String registerResponse = webTestClient.post()
+    String registerResponse =
+        webTestClient
+            .post()
             .uri("/api/v1/auth/register")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(registerJson)
             .exchange()
-            .expectStatus().isCreated()
+            .expectStatus()
+            .isCreated()
             .expectBody(String.class)
             .returnResult()
             .getResponseBody();
 
-        JsonNode registered = objectMapper.readTree(registerResponse);
-        assertThat(registered.get("accessToken").asText()).isNotBlank();
-        assertThat(registered.get("refreshToken").asText()).isNotBlank();
+    JsonNode registered = objectMapper.readTree(registerResponse);
+    assertThat(registered.get("accessToken").asText()).isNotBlank();
+    assertThat(registered.get("refreshToken").asText()).isNotBlank();
 
-        webTestClient.get()
-            .uri("/api/v1/auth/me")
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + registered.get("accessToken").asText())
-            .exchange()
-            .expectStatus().isOk();
+    webTestClient
+        .get()
+        .uri("/api/v1/auth/me")
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + registered.get("accessToken").asText())
+        .exchange()
+        .expectStatus()
+        .isOk();
 
-        String loginJson = """
+    String loginJson =
+        """
             {
               "email": "ada@example.com",
               "password": "correct-horse-battery-staple"
             }
             """;
-        webTestClient.post()
-            .uri("/api/v1/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(loginJson)
-            .exchange()
-            .expectStatus().isOk();
+    webTestClient
+        .post()
+        .uri("/api/v1/auth/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(loginJson)
+        .exchange()
+        .expectStatus()
+        .isOk();
 
-        String refreshJson = """
+    String refreshJson =
+        """
             { "refreshToken": "%s" }
-            """.formatted(registered.get("refreshToken").asText());
-        webTestClient.post()
-            .uri("/api/v1/auth/refresh")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(refreshJson)
-            .exchange()
-            .expectStatus().isOk();
-    }
+            """
+            .formatted(registered.get("refreshToken").asText());
+    webTestClient
+        .post()
+        .uri("/api/v1/auth/refresh")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(refreshJson)
+        .exchange()
+        .expectStatus()
+        .isOk();
+  }
 
-    @Test
-    void duplicateRegistrationIsRejected() throws Exception {
-        String json = """
+  @Test
+  void duplicateRegistrationIsRejected() throws Exception {
+    String json =
+        """
             {
               "email": "grace@example.com",
               "password": "correct-horse-battery-staple",
@@ -88,17 +99,21 @@ class AuthControllerTest {
             }
             """;
 
-        webTestClient.post()
-            .uri("/api/v1/auth/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(json)
-            .exchange()
-            .expectStatus().isCreated();
-        webTestClient.post()
-            .uri("/api/v1/auth/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(json)
-            .exchange()
-            .expectStatus().isEqualTo(409);
-    }
+    webTestClient
+        .post()
+        .uri("/api/v1/auth/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(json)
+        .exchange()
+        .expectStatus()
+        .isCreated();
+    webTestClient
+        .post()
+        .uri("/api/v1/auth/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(json)
+        .exchange()
+        .expectStatus()
+        .isEqualTo(409);
+  }
 }

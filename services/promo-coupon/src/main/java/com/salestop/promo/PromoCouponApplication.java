@@ -1,0 +1,11 @@
+package com.salestop.promo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class PromoCouponApplication {
+  public static void main(String[] args) {
+    SpringApplication.run(PromoCouponApplication.class, args);
+  }
+}

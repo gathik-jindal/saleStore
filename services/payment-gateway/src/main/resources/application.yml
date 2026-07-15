@@ -1,0 +1,23 @@
+server.port: 8087
+spring:
+  application.name: payment-gateway
+  datasource:
+    url: ${PAYMENT_DATASOURCE_URL:jdbc:h2:mem:payments;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1}
+    username: ${PAYMENT_DATASOURCE_USERNAME:sa}
+    password: ${PAYMENT_DATASOURCE_PASSWORD:}
+    driver-class-name: ${PAYMENT_DATASOURCE_DRIVER:org.h2.Driver}
+  jpa:
+    hibernate.ddl-auto: validate
+    open-in-view: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties.spring.json.trusted.packages: com.salestop.common.events
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+management.endpoints.web.exposure.include: health,info,prometheus
+payment.webhook-secret: ${PAYMENT_WEBHOOK_SECRET:local-webhook-secret}

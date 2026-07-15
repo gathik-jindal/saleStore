@@ -9,16 +9,15 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 public class SecurityConfig {
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12);
+  }
 
-    @Bean
-    SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
-        return http
-            .csrf(csrf -> csrf.disable())
-            .authorizeExchange(auth -> auth.anyExchange().permitAll())
-            .build();
-    }
+  @Bean
+  SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
+    return http.csrf(csrf -> csrf.disable())
+        .authorizeExchange(auth -> auth.anyExchange().permitAll())
+        .build();
+  }
 }

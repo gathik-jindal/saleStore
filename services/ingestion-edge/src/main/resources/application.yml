@@ -1,0 +1,33 @@
+server.port: 8084
+spring:
+  application.name: ingestion-edge
+  data.redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    timeout: 500ms
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+        delivery.timeout.ms: 3000
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+management.endpoints.web.exposure.include: health,info,prometheus
+salestop.internal-key: ${SALESTOP_INTERNAL_KEY:local-internal-key}
+edge:
+  inventory-grpc-host: ${INVENTORY_GRPC_HOST:localhost}
+  inventory-grpc-port: ${INVENTORY_GRPC_PORT:9095}
+  catalog-url: ${CATALOG_URL:http://localhost:8082}
+  promo-url: ${PROMO_URL:http://localhost:8083}
+  jwt:
+    jwks-uri: ${JWKS_URI:http://localhost:8081/.well-known/jwks.json}
+    issuer: ${JWT_ISSUER:salestop-user-identity}
+    audience: ${JWT_AUDIENCE:salestop}
+    cache-ttl: PT5M
+  rate-limit:
+    capacity: ${RATE_LIMIT_CAPACITY:10}
+    refill-per-second: ${RATE_LIMIT_REFILL:10}
